@@ -55,8 +55,13 @@ func main() {
 	for rows.Next() {
 		// ... 假设你的表有一些列，你需要定义相应的变量来接收
 		// 例如 var id int, name string
-		// rows.Scan(&id, &name)
-		// fmt.Println(id, name)
+		var id int64
+		var cityCn string
+		err := rows.Scan(&id, &cityCn)
+		if err != nil {
+			return
+		}
+		fmt.Println(id, cityCn)
 	}
 
 	if err = rows.Err(); err != nil {
