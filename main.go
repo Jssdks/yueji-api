@@ -59,6 +59,7 @@ func main() {
 		var cityCn string
 		err := rows.Scan(&id, &cityCn)
 		if err != nil {
+			fmt.Println(err)
 			return
 		}
 		fmt.Println(id, cityCn)
