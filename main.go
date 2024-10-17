@@ -13,7 +13,7 @@ var ctx = context.Background()
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		_, err := fmt.Fprintln(w, "YUEJI API")
+		_, err := fmt.Fprintln(w, "YUEJI API!")
 		if err != nil {
 			return
 		}
