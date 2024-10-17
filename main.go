@@ -20,7 +20,7 @@ func main() {
 	})
 
 	// 使用dsn格式定义数据库连接信息
-	dsn := "root:123456@tcp(mysql:3306)/yueji_test"
+	dsn := "root:123456@tcp(localhost:3306)/yueji_test"
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
@@ -69,9 +69,9 @@ func main() {
 	}
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "redis:6379", // Redis地址
-		Password: "",           // Redis密码，如果没有则为空字符串
-		DB:       0,            // 使用默认DB
+		Addr:     "localhost:6379", // Redis地址
+		Password: "",               // Redis密码，如果没有则为空字符串
+		DB:       0,                // 使用默认DB
 	})
 
 	// 设置键值
