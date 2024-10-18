@@ -23,7 +23,7 @@ func main() {
 		dsn := "root:123456@tcp(localhost:3306)/yueji_test"
 		db, err := sql.Open("mysql", dsn)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 		defer func(db *sql.DB) {
 			err := db.Close()
@@ -49,7 +49,10 @@ func main() {
 				panic(err)
 			}
 		}(rows)
-		fmt.Println("DB 连接成功")
+		_, err = fmt.Fprintln(w, "DB 连接成功")
+		if err != nil {
+			return
+		}
 		// 处理查询结果
 		for rows.Next() {
 			// ... 假设你的表有一些列，你需要定义相应的变量来接收
@@ -58,23 +61,30 @@ func main() {
 			var cityCn string
 			err := rows.Scan(&id, &cityCn)
 			if err != nil {
-				fmt.Println(err)
+				panic(err)
+			}
+			_, err = fmt.Fprintln(w, id, cityCn)
+			if err != nil {
 				return
 			}
-			fmt.Println(id, cityCn)
 		}
 
 		if err = rows.Err(); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("DB读取成功")
+		_, err = fmt.Fprintln(w, "DB读取成功")
+		if err != nil {
+			return
+		}
 		rdb := redis.NewClient(&redis.Options{
 			Addr:     "localhost:6379",   // Redis地址
 			Password: "k7z9x*t[j=M^5){e", // Redis密码，如果没有则为空字符串
 			DB:       7,                  // 使用默认DB
 		})
-		fmt.Println("REDIS连接成功")
-
+		_, err = fmt.Fprintln(w, "REDIS连接成功")
+		if err != nil {
+			return
+		}
 		// 设置键值
 		err = rdb.Set(ctx, "go-key", time.Now().String(), 0).Err()
 		if err != nil {
@@ -85,14 +95,20 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("go-key", val) // 输出: key value
+		_, err = fmt.Fprintln(w, "go-key", val)
+		if err != nil {
+			return
+		}
 
 		//// 删除键
 		//err = rdb.Del(ctx, "key").Err()
 		//if err != nil {
 		//	panic(err)
 		//}
-		fmt.Println("DB读取成功")
+		_, err = fmt.Fprintln(w, "DB读取成功")
+		if err != nil {
+			return
+		}
 		// 关闭连接
 		err = rdb.Close()
 		if err != nil {
