@@ -57,7 +57,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			p(w, &id, &cityCn)
+			p(w, id, cityCn)
 		}
 
 		if err = rows.Err(); err != nil {
