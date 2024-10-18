@@ -41,7 +41,7 @@ func main() {
 	}
 
 	// 执行查询
-	rows, err := db.Query("SELECT id city_cn FROM dict_city LIMIT 10")
+	rows, err := db.Query("SELECT id,city_cn FROM dict_city LIMIT 10")
 	if err != nil {
 		panic(err)
 	}
