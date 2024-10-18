@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"net/http"
+	"time"
 )
 
 var ctx = context.Background()
@@ -71,35 +73,35 @@ func main() {
 	if err != nil {
 		return
 	}
-	//
-	//rdb := redis.NewClient(&redis.Options{
-	//	Addr:     "localhost:6379", // Redis地址
-	//	Password: "",               // Redis密码，如果没有则为空字符串
-	//	DB:       0,                // 使用默认DB
-	//})
-	//
-	//// 设置键值
-	//err = rdb.Set(ctx, "key", "value", 0).Err()
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379", // Redis地址
+		Password: "",               // Redis密码，如果没有则为空字符串
+		DB:       7,                // 使用默认DB
+	})
+
+	// 设置键值
+	err = rdb.Set(ctx, "go-key", time.Now().String(), 0).Err()
+	if err != nil {
+		panic(err)
+	}
+
+	// 获取键值
+	val, err := rdb.Get(ctx, "go-key").Result()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("go-key", val) // 输出: key value
+
+	//// 删除键
+	//err = rdb.Del(ctx, "key").Err()
 	//if err != nil {
 	//	panic(err)
 	//}
-	//
-	//// 获取键值
-	//val, err := rdb.Get(ctx, "key").Result()
-	//if err != nil {
-	//	panic(err)
-	//}
-	//fmt.Println("key", val) // 输出: key value
-	//
-	////// 删除键
-	////err = rdb.Del(ctx, "key").Err()
-	////if err != nil {
-	////	panic(err)
-	////}
-	//
-	//// 关闭连接
-	//err = rdb.Close()
-	//if err != nil {
-	//	panic(err)
-	//}
+
+	// 关闭连接
+	err = rdb.Close()
+	if err != nil {
+		panic(err)
+	}
 }
