@@ -14,7 +14,7 @@ import (
 var ctx = context.Background()
 
 func p(w http.ResponseWriter, s ...interface{}) {
-	_, err := fmt.Fprintln(w, s)
+	_, err := fmt.Fprintln(w, s...)
 	if err != nil {
 		panic(err)
 	}
