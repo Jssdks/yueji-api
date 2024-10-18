@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"net/http"
 	"time"
 )
@@ -20,55 +22,55 @@ func main() {
 	})
 
 	// 使用dsn格式定义数据库连接信息
-	//dsn := "root:123456@tcp(localhost:3306)/yueji_test"
-	//db, err := sql.Open("mysql", dsn)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//defer func(db *sql.DB) {
-	//	err := db.Close()
-	//	if err != nil {
-	//
-	//	}
-	//}(db)
-	//
-	//// 测试连接
-	//err = db.Ping()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//// 执行查询
-	//rows, err := db.Query("SELECT * FROM dict_city LIMIT 10")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//defer func(rows *sql.Rows) {
-	//	err := rows.Close()
-	//	if err != nil {
-	//
-	//	}
-	//}(rows)
-	//
-	//// 处理查询结果
-	//for rows.Next() {
-	//	// ... 假设你的表有一些列，你需要定义相应的变量来接收
-	//	// 例如 var id int, name string
-	//	var id int64
-	//	var cityCn string
-	//	err := rows.Scan(&id, &cityCn)
-	//	if err != nil {
-	//		fmt.Println(err)
-	//		return
-	//	}
-	//	fmt.Println(id, cityCn)
-	//}
-	//
-	//if err = rows.Err(); err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//fmt.Println("Successfully connected and queried the database!")
+	dsn := "root:123456@tcp(localhost:3306)/yueji_test"
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(db)
+
+	// 测试连接
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	// 执行查询
+	rows, err := db.Query("SELECT id city_cn FROM dict_city LIMIT 10")
+	if err != nil {
+		panic(err)
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(rows)
+
+	// 处理查询结果
+	for rows.Next() {
+		// ... 假设你的表有一些列，你需要定义相应的变量来接收
+		// 例如 var id int, name string
+		var id int64
+		var cityCn string
+		err := rows.Scan(&id, &cityCn)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(id, cityCn)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Successfully connected and queried the database!")
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",   // Redis地址
 		Password: "k7z9x*t[j=M^5){e", // Redis密码，如果没有则为空字符串
@@ -76,7 +78,7 @@ func main() {
 	})
 
 	// 设置键值
-	err := rdb.Set(ctx, "go-key", time.Now().String(), 0).Err()
+	err = rdb.Set(ctx, "go-key", time.Now().String(), 0).Err()
 	if err != nil {
 		panic(err)
 	}
