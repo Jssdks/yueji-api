@@ -69,19 +69,14 @@ func main() {
 	//}
 	//
 	//fmt.Println("Successfully connected and queried the database!")
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		return
-	}
-
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379", // Redis地址
-		Password: "",               // Redis密码，如果没有则为空字符串
-		DB:       7,                // 使用默认DB
+		Addr:     "localhost:6379",   // Redis地址
+		Password: "k7z9x*t[j=M^5){e", // Redis密码，如果没有则为空字符串
+		DB:       7,                  // 使用默认DB
 	})
 
 	// 设置键值
-	err = rdb.Set(ctx, "go-key", time.Now().String(), 0).Err()
+	err := rdb.Set(ctx, "go-key", time.Now().String(), 0).Err()
 	if err != nil {
 		panic(err)
 	}
@@ -104,4 +99,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	err = http.ListenAndServe(":8080", nil)
+	if err != nil {
+		return
+	}
+
 }
