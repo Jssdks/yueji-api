@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"time"
@@ -20,10 +21,30 @@ func p(w http.ResponseWriter, s ...interface{}) {
 	}
 }
 
+type Config struct {
+	App struct {
+		Name    string
+		Version string
+	}
+	Mysql struct {
+		Dsn string
+	}
+	Redis struct {
+		Password string
+	}
+}
+
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		p(w, "yuejilire.cn api")
-		dsn := "root:6NXPqMm9JZgj3UnK@tcp(localhost:33080)/yueji_test"
+		viper.AddConfigPath("./")
+		viper.SetConfigName("config")
+		viper.SetConfigType("yaml")
+		err := viper.ReadInConfig()
+		if err != nil {
+			panic(err)
+		}
+		dsn := viper.GetString("mysql.dsn")
 		db, err := sql.Open("mysql", dsn)
 		if err != nil {
 			panic(err)
@@ -66,7 +87,7 @@ func main() {
 		p(w, "DB读取成功")
 		rdb := redis.NewClient(&redis.Options{
 			Addr:     "localhost:6379",
-			Password: "k7z9x*t[j=M^5){e",
+			Password: viper.GetString("redis.password"),
 			DB:       7,
 		})
 		defer func(rdb *redis.Client) {
