@@ -23,7 +23,7 @@ func p(w http.ResponseWriter, s ...interface{}) {
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		p(w, "YUEJI API!")
-		dsn := "root:123456@tcp(localhost:3306)/yueji_test"
+		dsn := "root:6NXPqMm9JZgj3UnK@tcp(localhost:33080)/yueji_test"
 		db, err := sql.Open("mysql", dsn)
 		if err != nil {
 			panic(err)
